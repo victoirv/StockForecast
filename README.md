@@ -4,20 +4,20 @@ Basic framework for using a variety of models to forecast and simulate stock mar
 * * *
 
 ## To-Do ##
-- Switch getopt to argparse
-- Command line arguments for start and end dates
-- Neural network model
-- Add more performance metrics
- - Good/Total predictions
- - Performance vs random
- - Portfolio improvement as function of stock improvement
-- Improve optimization code to avoid overfitting
-- Add makefile for doxygen, include profiling graph (code here until then)
- - python -m cProfile -o logfile stocks.py
- - gprof2dot -f pstats logfile -o dotfile
- - dot dotfile -Tpng pngfile
-- Figure out why S&P and DJIA seemingly observe different holidays
-- Make documentation more doxygen friendly
+* Switch getopt to argparse
+* Command line arguments for start and end dates
+* Neural network model
+* Add more performance metrics
+  * Good/Total predictions
+  * Performance vs random
+  * Portfolio improvement as function of stock improvement
+* Improve optimization code to avoid overfitting
+* Add makefile for doxygen, include profiling graph (code here until then)
+  * python -m cProfile -o logfile stocks.py
+  * gprof2dot -f pstats logfile -o dotfile
+  * dot dotfile -Tpng pngfile
+* Figure out why S&P and DJIA seemingly observe different holidays
+* Make documentation more doxygen friendly
 
 ## [Doxygen documentation](docs/html/index.html) ##
 
