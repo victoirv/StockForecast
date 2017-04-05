@@ -1,0 +1,423 @@
+\hypertarget{namespacestocks}{}\section{stocks Namespace Reference}
+\label{namespacestocks}\index{stocks@{stocks}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacestocks_a44235135cad9d919663b15452cf3e613}{get\+Closing} (Tick, start=str(date(date.\+today().year-\/1, date.\+today().month, date.\+today().day)), end=str(date.\+today()))
+\item 
+def \hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate} (simtype, amount, data, return\+Series=0, plot=0, extra\+Arg)
+\item 
+def \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{result\+Print} (method, ticker, start, end)
+\item 
+def \hyperlink{namespacestocks_a7d4f88b285b7a553f17f91e71ee18a31}{ensemble\+Sim} (simtype, starting\+Worth, data, ticker, ensemble\+Num=100, extra\+Arg)
+\item 
+def \hyperlink{namespacestocks_a5ce0ea6dd1cb1e1baf78fbb4313b64b9}{Common\+Date} (dateX, X, dateF, F)
+\item 
+def \hyperlink{namespacestocks_a001673a0b7e5f0867197d97fea8a251b}{Optimize\+IR} (data, starting\+Worth, extra\+Arg)
+\item 
+def \hyperlink{namespacestocks_aa4d6e539aeea3ab00b8bf598b1025e58}{main} (argv)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{namespacestocks_a5ce0ea6dd1cb1e1baf78fbb4313b64b9}{}\label{namespacestocks_a5ce0ea6dd1cb1e1baf78fbb4313b64b9} 
+\index{stocks@{stocks}!Common\+Date@{Common\+Date}}
+\index{Common\+Date@{Common\+Date}!stocks@{stocks}}
+\subsubsection{\texorpdfstring{Common\+Date()}{CommonDate()}}
+{\footnotesize\ttfamily def stocks.\+Common\+Date (\begin{DoxyParamCaption}\item[{}]{dateX,  }\item[{}]{X,  }\item[{}]{dateF,  }\item[{}]{F }\end{DoxyParamCaption})}
+
+
+
+Definition at line 153 of file stocks.\+py.
+
+
+
+Referenced by main().
+
+
+\begin{DoxyCode}
+153 \textcolor{keyword}{def }\hyperlink{namespacestocks_a5ce0ea6dd1cb1e1baf78fbb4313b64b9}{CommonDate}(dateX,X,dateF,F):
+154     Xdic=dict(zip(dateX,X))
+155     Fdic=dict(zip(dateF,F))
+156     common=(Xdic.keys() & Fdic.keys())
+157     F=[Fdic[i] \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} sorted(common)]
+158     \textcolor{keywordflow}{return} F
+159 
+\end{DoxyCode}
+\hypertarget{namespacestocks_a7d4f88b285b7a553f17f91e71ee18a31}{}\label{namespacestocks_a7d4f88b285b7a553f17f91e71ee18a31} 
+\index{stocks@{stocks}!ensemble\+Sim@{ensemble\+Sim}}
+\index{ensemble\+Sim@{ensemble\+Sim}!stocks@{stocks}}
+\subsubsection{\texorpdfstring{ensemble\+Sim()}{ensembleSim()}}
+{\footnotesize\ttfamily def stocks.\+ensemble\+Sim (\begin{DoxyParamCaption}\item[{}]{simtype,  }\item[{}]{starting\+Worth,  }\item[{}]{data,  }\item[{}]{ticker,  }\item[{}]{ensemble\+Num = {\ttfamily 100},  }\item[{}]{extra\+Arg }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Run a model a number of times, look at median results
+Not sure if it technically counts as an "ensemble" model, but
+good way to observe effects of random variations in models that
+have random variations
+\end{DoxyVerb}
+ 
+
+Definition at line 124 of file stocks.\+py.
+
+
+
+References simulate().
+
+
+
+Referenced by main().
+
+
+\begin{DoxyCode}
+124 \textcolor{keyword}{def }\hyperlink{namespacestocks_a7d4f88b285b7a553f17f91e71ee18a31}{ensembleSim}(simtype, startingWorth, data, ticker, ensembleNum=100, **extraArg):
+125     \textcolor{stringliteral}{'''Run a model a number of times, look at median results}
+126 \textcolor{stringliteral}{    Not sure if it technically counts as an "ensemble" model, but}
+127 \textcolor{stringliteral}{    good way to observe effects of random variations in models that}
+128 \textcolor{stringliteral}{    have random variations}
+129 \textcolor{stringliteral}{    '''}
+130 
+131     ensembleRun=np.zeros([ensembleNum,len(\hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(simtype,startingWorth,data,**extraArg,
+      returnSeries=1))])
+132     \textcolor{keywordflow}{for} run \textcolor{keywordflow}{in} range(ensembleNum):
+133         ensembleRun[run,:] = \hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(simtype,startingWorth,data,**extraArg,returnSeries=1)
+134 
+135 
+136     ensMed=np.median(ensembleRun,0)
+137 
+138     date=extraArg.get(\textcolor{stringliteral}{'date'},[i \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} range(len(ensMed))])
+139 
+140 
+141     plt.plot(date,ensMed, \textcolor{stringliteral}{'k'})
+142     plt.plot(date,[startingWorth \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} range(len(ensMed))],\textcolor{stringliteral}{'r-.'})
+143 
+144     plt.fill\_between(date,ensMed-2.0*np.std(ensembleRun,0), ensMed+2.0*np.std(ensembleRun,0), color=\textcolor{stringliteral}{'b'}, 
+      alpha=0.2)
+145 
+146     plt.ylabel(\textcolor{stringliteral}{'Value ($)'})
+147     plt.xlabel(\textcolor{stringliteral}{'Date'})
+148     plt.title(\textcolor{stringliteral}{'Simulating use of \{\} for \{\}'}.format(simtype.\_\_name\_\_,ticker))
+149     plt.savefig(\textcolor{stringliteral}{'Plots/\{\}\_\{\}\_ensemble.png'}.format(ticker,simtype.\_\_name\_\_))
+150     plt.show()
+151 
+152 
+\end{DoxyCode}
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespacestocks_a7d4f88b285b7a553f17f91e71ee18a31_cgraph}
+\end{center}
+\end{figure}
+\hypertarget{namespacestocks_a44235135cad9d919663b15452cf3e613}{}\label{namespacestocks_a44235135cad9d919663b15452cf3e613} 
+\index{stocks@{stocks}!get\+Closing@{get\+Closing}}
+\index{get\+Closing@{get\+Closing}!stocks@{stocks}}
+\subsubsection{\texorpdfstring{get\+Closing()}{getClosing()}}
+{\footnotesize\ttfamily def stocks.\+get\+Closing (\begin{DoxyParamCaption}\item[{}]{Tick,  }\item[{}]{start = {\ttfamily str(date(date.today().year-\/1,date.today().month,date.today().day))},  }\item[{}]{end = {\ttfamily str(date.today())} }\end{DoxyParamCaption})}
+
+
+
+Definition at line 14 of file stocks.\+py.
+
+
+
+Referenced by main().
+
+
+\begin{DoxyCode}
+14 \textcolor{keyword}{def }\hyperlink{namespacestocks_a44235135cad9d919663b15452cf3e613}{getClosing}(Tick,start=str(date(date.today().year-1,date.today().month,date.today().day)),end=
+      str(date.today())):
+15     stock = Share(Tick)
+16     stockhist=stock.get\_historical(start,end)
+17 
+18     vals=list()
+19     vals=[float(stockhist[i][\textcolor{stringliteral}{'Close'}]) \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} range(len(stockhist))]
+20     dates=[datetime.datetime.strptime(stockhist[i][\textcolor{stringliteral}{'Date'}],\textcolor{stringliteral}{'%Y-%m-%d'}) \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} range(len(stockhist))]
+21 
+22     \textcolor{keywordflow}{return} (dates,vals)
+23 
+24 
+25 
+\end{DoxyCode}
+\hypertarget{namespacestocks_aa4d6e539aeea3ab00b8bf598b1025e58}{}\label{namespacestocks_aa4d6e539aeea3ab00b8bf598b1025e58} 
+\index{stocks@{stocks}!main@{main}}
+\index{main@{main}!stocks@{stocks}}
+\subsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily def stocks.\+main (\begin{DoxyParamCaption}\item[{}]{argv }\end{DoxyParamCaption})}
+
+
+
+Definition at line 178 of file stocks.\+py.
+
+
+
+References Common\+Date(), ensemble\+Sim(), get\+Closing(), result\+Print(), and simulate().
+
+
+\begin{DoxyCode}
+178 \textcolor{keyword}{def }\hyperlink{namespacestocks_aa4d6e539aeea3ab00b8bf598b1025e58}{main}(argv):
+179     opts, args = getopt.getopt(argv[1:],\textcolor{stringliteral}{"hlt:"},[\textcolor{stringliteral}{"log="},\textcolor{stringliteral}{"ticker="}])
+180     \textcolor{keywordflow}{for} opt, arg \textcolor{keywordflow}{in} opts:
+181         \textcolor{keywordflow}{if} opt==\textcolor{stringliteral}{"-h"}:
+182             print(\textcolor{stringliteral}{'python read.py'})
+183         \textcolor{keywordflow}{elif} opt \textcolor{keywordflow}{in} (\textcolor{stringliteral}{"-l"},\textcolor{stringliteral}{"--log"}):
+184             loglevel=arg
+185         \textcolor{keywordflow}{elif} opt \textcolor{keywordflow}{in} (\textcolor{stringliteral}{"-t"},\textcolor{stringliteral}{"--ticker"}):
+186             ticker=arg
+187 
+188     if(\textcolor{stringliteral}{'ticker'} \textcolor{keywordflow}{not} \textcolor{keywordflow}{in} vars()):
+189         ticker = \textcolor{stringliteral}{'ABX'}
+190     if(\textcolor{stringliteral}{'loglevel'} \textcolor{keywordflow}{not} \textcolor{keywordflow}{in} vars()):
+191         loglevel=\textcolor{stringliteral}{'WARNING'}
+192 
+193     logging.basicConfig(format=\textcolor{stringliteral}{'%(levelname)s:%(message)s'},level=loglevel)
+194 
+195     (dateX,X)=\hyperlink{namespacestocks_a44235135cad9d919663b15452cf3e613}{getClosing}(ticker)
+196     \textcolor{comment}{#Because this somehow gets reversed}
+197     dateX.sort()
+198 
+199     startingWorth=10000
+200     \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'Randombuy'},ticker,startingWorth,\hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(randombuy,startingWorth,X))
+201     \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'Weekbuy'},ticker,startingWorth,\hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(weeklyrise,startingWorth,X,
+      difference=0.1))
+202     \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'Dailybuy'},ticker,startingWorth,\hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(dailyrise,startingWorth,X,
+      difference=0.05))
+203 
+204     \textcolor{comment}{#Get extra variables and strip them to times that exist with X}
+205     (dateF,F)=\hyperlink{namespacestocks_a44235135cad9d919663b15452cf3e613}{getClosing}(\textcolor{stringliteral}{'^DJI'})
+206     (dateF2, F2)=\hyperlink{namespacestocks_a44235135cad9d919663b15452cf3e613}{getClosing}(\textcolor{stringliteral}{'^GSPC'})
+207     (dateF3, F3)=\hyperlink{namespacestocks_a44235135cad9d919663b15452cf3e613}{getClosing}(\textcolor{stringliteral}{'^IXIC'})
+208     (dateF4, F4)=\hyperlink{namespacestocks_a44235135cad9d919663b15452cf3e613}{getClosing}(\textcolor{stringliteral}{'GE'})
+209     F=\hyperlink{namespacestocks_a5ce0ea6dd1cb1e1baf78fbb4313b64b9}{CommonDate}(dateX,X,dateF,F)
+210     \textcolor{comment}{#F=np.random.randn(1,len(F)).tolist()[0]}
+211     F2=\hyperlink{namespacestocks_a5ce0ea6dd1cb1e1baf78fbb4313b64b9}{CommonDate}(dateX,X,dateF2,F2)
+212     F3=\hyperlink{namespacestocks_a5ce0ea6dd1cb1e1baf78fbb4313b64b9}{CommonDate}(dateX,X,dateF3,F3)
+213     F4=\hyperlink{namespacestocks_a5ce0ea6dd1cb1e1baf78fbb4313b64b9}{CommonDate}(dateX,X,dateF4,F4)
+214 
+215 
+216     \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'LS'},ticker,startingWorth,\hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(LS,startingWorth,np.array([X,F]).T,
+      difference=0.05))
+217     \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'IR'},ticker,startingWorth,\hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(IRpred,startingWorth,np.array([X,F]).
+      T,Nx=1,Nf=7,ratio=0.03,days=5))
+218     \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'IR2'},ticker,startingWorth,\hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(IRpred,startingWorth,np.array([X,F,
+      F2]).T,Nx=1,Nf=7,ratio=0.03,days=5))
+219     \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'IR3'},ticker,startingWorth,\hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(IRpred,startingWorth,np.array([X,F,
+      F2,F3]).T,Nx=1,Nf=7,ratio=0.03,days=5))
+220     \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'IR4'},ticker,startingWorth,\hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(IRpred,startingWorth,np.array([X,F,
+      F2,F3,F4]).T,Nx=1,Nf=7,ratio=0.03,days=5))
+221     \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'IR5'},ticker,startingWorth,\hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(IRpred,startingWorth,np.array([X,F,
+      F4]).T,Nx=1,Nf=7,ratio=0.03,days=5))
+222 
+223 
+224 
+225     \textcolor{comment}{#Simulate and plot ensemble  model. Only really useful for models with random/variable component}
+226     \hyperlink{namespacestocks_a7d4f88b285b7a553f17f91e71ee18a31}{ensembleSim}(randombuy,startingWorth,np.array([X,F]).T,ticker)
+227 
+228     \hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(IRpred,startingWorth,np.array([X,F]).T,Nx=1,Nf=7,ratio=0.03,days=5,plot=1,ticker=
+      ticker,date=dateX)
+229     \hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(IRpred,startingWorth,np.array([X,F,F2]).T,Nx=1,Nf=7,ratio=0.03,days=5,plot=1,ticker=
+      ticker,date=dateX)
+230 
+231     \textcolor{comment}{#OptimizeIR(np.array([X,F]).T,startingWorth,Nx=1,Nf=2,ratio=0.03,days=6, ticker=ticker)}
+232 
+233 
+\end{DoxyCode}
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespacestocks_aa4d6e539aeea3ab00b8bf598b1025e58_cgraph}
+\end{center}
+\end{figure}
+\hypertarget{namespacestocks_a001673a0b7e5f0867197d97fea8a251b}{}\label{namespacestocks_a001673a0b7e5f0867197d97fea8a251b} 
+\index{stocks@{stocks}!Optimize\+IR@{Optimize\+IR}}
+\index{Optimize\+IR@{Optimize\+IR}!stocks@{stocks}}
+\subsubsection{\texorpdfstring{Optimize\+I\+R()}{OptimizeIR()}}
+{\footnotesize\ttfamily def stocks.\+Optimize\+IR (\begin{DoxyParamCaption}\item[{}]{data,  }\item[{}]{starting\+Worth,  }\item[{}]{extra\+Arg }\end{DoxyParamCaption})}
+
+
+
+Definition at line 160 of file stocks.\+py.
+
+
+
+References result\+Print(), and simulate().
+
+
+\begin{DoxyCode}
+160 \textcolor{keyword}{def }\hyperlink{namespacestocks_a001673a0b7e5f0867197d97fea8a251b}{OptimizeIR}(data,startingWorth,**extraArg):
+161     Nx=extraArg.get(\textcolor{stringliteral}{'Nx'},1)
+162     Nf=extraArg.get(\textcolor{stringliteral}{'Nf'},5)
+163     ratio=extraArg.get(\textcolor{stringliteral}{'ratio'},0.03)
+164     days=extraArg.get(\textcolor{stringliteral}{'days'},5)
+165     ticker=extraArg.get(\textcolor{stringliteral}{'ticker'},\textcolor{stringliteral}{'ABX'})
+166     \textcolor{comment}{#simulate(IRpred,start,data,Nx=Nx,Nf=Nf,ratio=ratio,days=days)}
+167     \textcolor{keywordflow}{for} Nxtry \textcolor{keywordflow}{in} range(0,10):
+168         \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'IR - Nx \{\}'}.format(Nxtry),ticker,startingWorth,
+      \hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(IRpred,startingWorth,data,Nx=Nxtry,Nf=Nf,ratio=ratio,days=days))
+169     \textcolor{keywordflow}{for} Nftry \textcolor{keywordflow}{in} range(0,10):
+170         \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'IR - Nf \{\}'}.format(Nftry),ticker,startingWorth,
+      \hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(IRpred,startingWorth,data,Nx=Nx,Nf=Nftry,ratio=ratio,days=days))
+171     \textcolor{keywordflow}{for} ratiotry \textcolor{keywordflow}{in} np.arange(0.0,0.1,0.01):
+172         \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'IR - ratio \{\}'}.format(ratiotry),ticker,startingWorth,
+      \hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(IRpred,startingWorth,data,Nx=Nx,Nf=Nf,ratio=ratiotry,days=days))
+173     \textcolor{keywordflow}{for} daystry \textcolor{keywordflow}{in} [1,5,6,10,12,15]:
+174         \hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(\textcolor{stringliteral}{'IR - days \{\}'}.format(daystry),ticker,startingWorth,
+      \hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(IRpred,startingWorth,data,Nx=Nx,Nf=Nf,ratio=ratio,days=daystry))
+175 
+176 
+177 
+\end{DoxyCode}
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{namespacestocks_a001673a0b7e5f0867197d97fea8a251b_cgraph}
+\end{center}
+\end{figure}
+\hypertarget{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{}\label{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b} 
+\index{stocks@{stocks}!result\+Print@{result\+Print}}
+\index{result\+Print@{result\+Print}!stocks@{stocks}}
+\subsubsection{\texorpdfstring{result\+Print()}{resultPrint()}}
+{\footnotesize\ttfamily def stocks.\+result\+Print (\begin{DoxyParamCaption}\item[{}]{method,  }\item[{}]{ticker,  }\item[{}]{start,  }\item[{}]{end }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Prints results in nice fancy colors
+Only tested with bash, but should(?) work for any terminal that
+supports bash-like syntax and coloring
+\end{DoxyVerb}
+ 
+
+Definition at line 111 of file stocks.\+py.
+
+
+
+Referenced by main(), and Optimize\+I\+R().
+
+
+\begin{DoxyCode}
+111 \textcolor{keyword}{def }\hyperlink{namespacestocks_ac80b7d5d1cdc027b7a0e2e19093baf9b}{resultPrint}(method, ticker, start, end):
+112     \textcolor{stringliteral}{"""Prints results in nice fancy colors}
+113 \textcolor{stringliteral}{    Only tested with bash, but should(?) work for any terminal that}
+114 \textcolor{stringliteral}{    supports bash-like syntax and coloring}
+115 \textcolor{stringliteral}{    """}
+116     if(start>end):
+117         change=\textcolor{stringliteral}{"\(\backslash\)x1b[1;31m \{:2.3f\}% \(\backslash\)x1b[0m"}.format((end-start)/start*100.0)
+118     \textcolor{keywordflow}{else}:
+119         change=\textcolor{stringliteral}{"\(\backslash\)x1b[1;32m \{:2.3f\}% \(\backslash\)x1b[0m"}.format((end-start)/start*100.0)
+120 
+121     print(\textcolor{stringliteral}{'\{\} of \{\} starts at \{:3d\}, results in \{:.3f\}. Change:\{\}'}.format(method,ticker,start,end,change))
+122 
+123 
+\end{DoxyCode}
+\hypertarget{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{}\label{namespacestocks_a6217dcad564ba6361c3cca44542ba220} 
+\index{stocks@{stocks}!simulate@{simulate}}
+\index{simulate@{simulate}!stocks@{stocks}}
+\subsubsection{\texorpdfstring{simulate()}{simulate()}}
+{\footnotesize\ttfamily def stocks.\+simulate (\begin{DoxyParamCaption}\item[{}]{simtype,  }\item[{}]{amount,  }\item[{}]{data,  }\item[{}]{return\+Series = {\ttfamily 0},  }\item[{}]{plot = {\ttfamily 0},  }\item[{}]{extra\+Arg }\end{DoxyParamCaption})}
+
+
+
+Definition at line 26 of file stocks.\+py.
+
+
+
+References Decision\+Methods.\+dailyrise(), Decision\+Methods.\+I\+Rpred(), Decision\+Methods.\+L\+S(), and Decision\+Methods.\+randombuy().
+
+
+
+Referenced by ensemble\+Sim(), main(), and Optimize\+I\+R().
+
+
+\begin{DoxyCode}
+26 \textcolor{keyword}{def }\hyperlink{namespacestocks_a6217dcad564ba6361c3cca44542ba220}{simulate}(simtype, amount, data, returnSeries=0, plot=0, **extraArg):
+27     Holding=0
+28     Worth=amount
+29     startpoint=10
+30     WorthSeries=[Worth \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} range(startpoint)]
+31 
+32     if(type(data[0]) \textcolor{keywordflow}{is} np.ndarray):
+33         X=data[:,0]
+34         logging.info(\textcolor{stringliteral}{'Data type is 2d numpy array'})
+35     \textcolor{keywordflow}{else}:
+36         X=data
+37 
+38     \textcolor{comment}{#Once you have an idea of the data length, check for date data}
+39     date=extraArg.get(\textcolor{stringliteral}{'date'},[i \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} range(len(X))])
+40 
+41     \textcolor{comment}{#print(X[-1])}
+42 
+43     logging.debug(\textcolor{stringliteral}{'len(X): \{0:2d\}'}.format(len(X)))
+44 
+45     if(plot):
+46         f, (ax1, ax2) = plt.subplots(2, sharex=\textcolor{keyword}{True}, figsize=(12, 12), dpi=100)
+47 
+48     \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} range(startpoint,len(X)-1):
+49         if(type(data[0]) \textcolor{keywordflow}{is} np.ndarray):
+50             buysell=simtype(data[0:i+1,:], **extraArg)
+51         \textcolor{keywordflow}{else}:
+52             buysell=simtype(data[0:i], **extraArg)
+53 
+54         \textcolor{keywordflow}{if} buysell>0 \textcolor{keywordflow}{and} Holding==0:
+55             Holding=floor(Worth/X[i+1])
+56             logging.info(\textcolor{stringliteral}{'Buying \{0:3d\} at \{1:.3f\} worth \{2:.3f\}'}.format(Holding,X[i+1],Holding*X[i+1]))
+57             if(plot):
+58                 ax1.plot(date[i],X[i+1],\textcolor{stringliteral}{'g+'},markersize=10, markeredgewidth=2)
+59             Worth-=Holding*X[i+1]
+60 
+61 
+62         \textcolor{keywordflow}{elif} buysell<0 \textcolor{keywordflow}{and} Holding>0:
+63             Worth+=Holding*X[i+1]
+64             logging.info(\textcolor{stringliteral}{'Selling \{0:3d\}, now worth \{1:.3f\}'}.format(Holding,Worth))
+65             Holding=0
+66             if(plot):
+67                 ax1.plot(date[i],X[i+1],\textcolor{stringliteral}{'r+'},markersize=10, markeredgewidth=2)
+68 
+69         WorthSeries.append(Worth+Holding*X[i+1])
+70 
+71 
+72     \textcolor{comment}{#Sell off what's left}
+73 
+74     Worth+=Holding*X[-1]
+75     WorthSeries.append(Worth)
+76 
+77     if(plot):
+78         ax1.plot(date,X,\textcolor{stringliteral}{'k'})
+79         ax1.set\_ylabel(\textcolor{stringliteral}{'Stock ($)'})
+80 
+81         ax2.plot(date,WorthSeries, \textcolor{stringliteral}{'k'})
+82         ax2.plot(date,[amount \textcolor{keywordflow}{for} i \textcolor{keywordflow}{in} range(len(WorthSeries))],\textcolor{stringliteral}{'r-.'})
+83         ax2.set\_ylabel(\textcolor{stringliteral}{'Investment ($)'})
+84         ax2.set\_xlabel(\textcolor{stringliteral}{'Day'})
+85         f.subplots\_adjust(hspace=0)
+86         plt.setp([a.get\_xticklabels() \textcolor{keywordflow}{for} a \textcolor{keywordflow}{in} f.axes[:-1]], visible=\textcolor{keyword}{False})
+87         ax1.grid(\textcolor{keyword}{True}, axis=\textcolor{stringliteral}{'x'})
+88         ax2.grid(\textcolor{keyword}{True}, axis=\textcolor{stringliteral}{'x'})
+89 
+90         if(\textcolor{stringliteral}{'ticker'} \textcolor{keywordflow}{in} extraArg):
+91             ax1.set\_title(\textcolor{stringliteral}{'Simulating use of \{\} for \{\}'}.format(simtype.\_\_name\_\_,extraArg[\textcolor{stringliteral}{'ticker'}]))
+92 
+93         \textcolor{comment}{#plt.set\_size\_inches(5, 10)}
+94         plt.savefig(\textcolor{stringliteral}{'Plots/\{\}\_\{\}.png'}.format(extraArg[\textcolor{stringliteral}{'ticker'}],simtype.\_\_name\_\_))
+95         plt.show()
+96 
+97     if(returnSeries):
+98         \textcolor{keywordflow}{return} WorthSeries
+99     \textcolor{keywordflow}{else}:
+100         \textcolor{keywordflow}{return} Worth
+101 
+102     \textcolor{comment}{#Just so the doxygen call graph picks up that these are possible calls}
+103     if(0):
+104         \hyperlink{namespaceDecisionMethods_a6ee6e338ea6a22bd13d5b9767b126f83}{IRpred}()
+105         \hyperlink{namespaceDecisionMethods_a856437b184fc8efd2df5f7fe1ba3644d}{LS}()
+106         \hyperlink{namespaceDecisionMethods_a4cb76bf4e82cc2509499af66f8c816b3}{dailyrise}()
+107         \hyperlink{namespaceDecisionMethods_a44bd5be577a4d99d6b2d144ad405dd09}{randombuy}()
+108 
+109 
+110 
+\end{DoxyCode}
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=345pt]{namespacestocks_a6217dcad564ba6361c3cca44542ba220_cgraph}
+\end{center}
+\end{figure}

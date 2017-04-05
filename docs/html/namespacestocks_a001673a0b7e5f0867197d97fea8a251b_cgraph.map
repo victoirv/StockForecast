@@ -1,0 +1,8 @@
+<map id="stocks.OptimizeIR" name="stocks.OptimizeIR">
+<area shape="rect" id="node2" href="$namespacestocks.html#ac80b7d5d1cdc027b7a0e2e19093baf9b" title="stocks.resultPrint" alt="" coords="184,31,308,57"/>
+<area shape="rect" id="node3" href="$namespacestocks.html#a6217dcad564ba6361c3cca44542ba220" title="stocks.simulate" alt="" coords="189,81,303,108"/>
+<area shape="rect" id="node4" href="$namespaceDecisionMethods.html#a6ee6e338ea6a22bd13d5b9767b126f83" title="DecisionMethods.IRpred" alt="" coords="369,5,533,32"/>
+<area shape="rect" id="node5" href="$namespaceDecisionMethods.html#a856437b184fc8efd2df5f7fe1ba3644d" title="DecisionMethods.LS" alt="" coords="380,56,523,83"/>
+<area shape="rect" id="node6" href="$namespaceDecisionMethods.html#a4cb76bf4e82cc2509499af66f8c816b3" title="DecisionMethods.dailyrise" alt="" coords="364,107,539,133"/>
+<area shape="rect" id="node7" href="$namespaceDecisionMethods.html#a44bd5be577a4d99d6b2d144ad405dd09" title="DecisionMethods.randombuy" alt="" coords="356,157,547,184"/>
+</map>

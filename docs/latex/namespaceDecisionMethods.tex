@@ -1,0 +1,155 @@
+\hypertarget{namespaceDecisionMethods}{}\section{Decision\+Methods Namespace Reference}
+\label{namespaceDecisionMethods}\index{Decision\+Methods@{Decision\+Methods}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespaceDecisionMethods_a44bd5be577a4d99d6b2d144ad405dd09}{randombuy} (data, extra\+Arg)
+\item 
+def \hyperlink{namespaceDecisionMethods_aed1379cd4db8a24d6e5e45908a88cb4b}{weeklyrise} (data, extra\+Arg)
+\item 
+def \hyperlink{namespaceDecisionMethods_a4cb76bf4e82cc2509499af66f8c816b3}{dailyrise} (data, extra\+Arg)
+\item 
+def \hyperlink{namespaceDecisionMethods_a856437b184fc8efd2df5f7fe1ba3644d}{LS} (data, extra\+Arg)
+\item 
+def \hyperlink{namespaceDecisionMethods_a6ee6e338ea6a22bd13d5b9767b126f83}{I\+Rpred} (data, Nx=1, Nf=5, ratio=0.\+03, days=5, extra\+Arg)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{namespaceDecisionMethods_a4cb76bf4e82cc2509499af66f8c816b3}{}\label{namespaceDecisionMethods_a4cb76bf4e82cc2509499af66f8c816b3} 
+\index{Decision\+Methods@{Decision\+Methods}!dailyrise@{dailyrise}}
+\index{dailyrise@{dailyrise}!Decision\+Methods@{Decision\+Methods}}
+\subsubsection{\texorpdfstring{dailyrise()}{dailyrise()}}
+{\footnotesize\ttfamily def Decision\+Methods.\+dailyrise (\begin{DoxyParamCaption}\item[{}]{data,  }\item[{}]{extra\+Arg }\end{DoxyParamCaption})}
+
+
+
+Definition at line 19 of file Decision\+Methods.\+py.
+
+
+
+Referenced by stocks.\+simulate().
+
+
+\begin{DoxyCode}
+19 \textcolor{keyword}{def }\hyperlink{namespaceDecisionMethods_a4cb76bf4e82cc2509499af66f8c816b3}{dailyrise}(data,**extraArg):
+20     difference=extraArg[\textcolor{stringliteral}{'difference'}]
+21     if(data[-1]>data[-2]*(1+difference)):
+22         \textcolor{keywordflow}{return} -1
+23     elif(data[-1]<data[-2]*(1-difference)):
+24         \textcolor{keywordflow}{return} 1
+25     \textcolor{keywordflow}{else}:
+26         \textcolor{keywordflow}{return} 0
+27 
+\end{DoxyCode}
+\hypertarget{namespaceDecisionMethods_a6ee6e338ea6a22bd13d5b9767b126f83}{}\label{namespaceDecisionMethods_a6ee6e338ea6a22bd13d5b9767b126f83} 
+\index{Decision\+Methods@{Decision\+Methods}!I\+Rpred@{I\+Rpred}}
+\index{I\+Rpred@{I\+Rpred}!Decision\+Methods@{Decision\+Methods}}
+\subsubsection{\texorpdfstring{I\+Rpred()}{IRpred()}}
+{\footnotesize\ttfamily def Decision\+Methods.\+I\+Rpred (\begin{DoxyParamCaption}\item[{}]{data,  }\item[{}]{Nx = {\ttfamily 1},  }\item[{}]{Nf = {\ttfamily 5},  }\item[{}]{ratio = {\ttfamily 0.03},  }\item[{}]{days = {\ttfamily 5},  }\item[{}]{extra\+Arg }\end{DoxyParamCaption})}
+
+
+
+Definition at line 48 of file Decision\+Methods.\+py.
+
+
+
+Referenced by stocks.\+simulate().
+
+
+\begin{DoxyCode}
+48 \textcolor{keyword}{def }\hyperlink{namespaceDecisionMethods_a6ee6e338ea6a22bd13d5b9767b126f83}{IRpred}(data,Nx=1,Nf=5,ratio=0.03,days=5,**extraArg):
+49     \textcolor{comment}{#Args: Nx, Nf, ratio, days}
+50     X=data[1:,0]
+51     F=data[:-1,1:]
+52 
+53     pred=\hyperlink{namespaceIR}{IR}(X,F,Nx,Nf)
+54     if(pred>(X[-days-1]*(1+ratio))):
+55         \textcolor{keywordflow}{return} -1
+56     elif(pred<(X[-days-1]*(1-ratio))):
+57         \textcolor{keywordflow}{return} 1
+58     \textcolor{keywordflow}{else}:
+59         \textcolor{keywordflow}{return} 0
+60 
+61     
+62 \end{DoxyCode}
+\hypertarget{namespaceDecisionMethods_a856437b184fc8efd2df5f7fe1ba3644d}{}\label{namespaceDecisionMethods_a856437b184fc8efd2df5f7fe1ba3644d} 
+\index{Decision\+Methods@{Decision\+Methods}!LS@{LS}}
+\index{LS@{LS}!Decision\+Methods@{Decision\+Methods}}
+\subsubsection{\texorpdfstring{L\+S()}{LS()}}
+{\footnotesize\ttfamily def Decision\+Methods.\+LS (\begin{DoxyParamCaption}\item[{}]{data,  }\item[{}]{extra\+Arg }\end{DoxyParamCaption})}
+
+
+
+Definition at line 28 of file Decision\+Methods.\+py.
+
+
+
+Referenced by stocks.\+simulate().
+
+
+\begin{DoxyCode}
+28 \textcolor{keyword}{def }\hyperlink{namespaceDecisionMethods_a856437b184fc8efd2df5f7fe1ba3644d}{LS}(data,**extraArg):
+29     difference=extraArg[\textcolor{stringliteral}{'difference'}]
+30     X=data[1:,0]
+31     F=data[:-1,1:]
+32     A=numpy.vstack([F.T,numpy.ones(len(X))]).T
+33     m=numpy.linalg.lstsq(A,X)[0]
+34     tomorrow=float(m[0]*F[-1]+m[1])
+35 
+36     logging.debug(\textcolor{stringliteral}{'X(end): \{0:.2f\}'}.format(X[-1]))
+37     logging.debug(\textcolor{stringliteral}{'F(end): \{0:.2f\}'}.format(float(data[-1,1:])))
+38     logging.debug(\textcolor{stringliteral}{'Tomorrow value: \{0:.2f\} from m: \{1:.2f\} c: \{2:.2f\}'}.format(tomorrow,m[0],m[1]))
+39 
+40     if(tomorrow>X[-1]*(1+difference)):
+41         \textcolor{keywordflow}{return} -1
+42     elif(tomorrow<X[-1]*(1-difference)):
+43         \textcolor{keywordflow}{return} 1
+44     \textcolor{keywordflow}{else}:
+45         \textcolor{keywordflow}{return} 0
+46 
+47 
+\end{DoxyCode}
+\hypertarget{namespaceDecisionMethods_a44bd5be577a4d99d6b2d144ad405dd09}{}\label{namespaceDecisionMethods_a44bd5be577a4d99d6b2d144ad405dd09} 
+\index{Decision\+Methods@{Decision\+Methods}!randombuy@{randombuy}}
+\index{randombuy@{randombuy}!Decision\+Methods@{Decision\+Methods}}
+\subsubsection{\texorpdfstring{randombuy()}{randombuy()}}
+{\footnotesize\ttfamily def Decision\+Methods.\+randombuy (\begin{DoxyParamCaption}\item[{}]{data,  }\item[{}]{extra\+Arg }\end{DoxyParamCaption})}
+
+
+
+Definition at line 6 of file Decision\+Methods.\+py.
+
+
+
+Referenced by stocks.\+simulate().
+
+
+\begin{DoxyCode}
+6 \textcolor{keyword}{def }\hyperlink{namespaceDecisionMethods_a44bd5be577a4d99d6b2d144ad405dd09}{randombuy}(data,**extraArg):
+7     \textcolor{keywordflow}{return} randint(-1,1)
+8 
+\end{DoxyCode}
+\hypertarget{namespaceDecisionMethods_aed1379cd4db8a24d6e5e45908a88cb4b}{}\label{namespaceDecisionMethods_aed1379cd4db8a24d6e5e45908a88cb4b} 
+\index{Decision\+Methods@{Decision\+Methods}!weeklyrise@{weeklyrise}}
+\index{weeklyrise@{weeklyrise}!Decision\+Methods@{Decision\+Methods}}
+\subsubsection{\texorpdfstring{weeklyrise()}{weeklyrise()}}
+{\footnotesize\ttfamily def Decision\+Methods.\+weeklyrise (\begin{DoxyParamCaption}\item[{}]{data,  }\item[{}]{extra\+Arg }\end{DoxyParamCaption})}
+
+
+
+Definition at line 9 of file Decision\+Methods.\+py.
+
+
+\begin{DoxyCode}
+9 \textcolor{keyword}{def }\hyperlink{namespaceDecisionMethods_aed1379cd4db8a24d6e5e45908a88cb4b}{weeklyrise}(data,**extraArg):
+10     difference=extraArg[\textcolor{stringliteral}{'difference'}]
+11     if(data[-1]>data[-6]*(1+difference)):
+12         \textcolor{keywordflow}{return} -1
+13     elif(data[-1]<data[-6]*(1-difference)):
+14         \textcolor{keywordflow}{return} 1
+15     \textcolor{keywordflow}{else}:
+16         \textcolor{keywordflow}{return} 0
+17 
+18 
+\end{DoxyCode}

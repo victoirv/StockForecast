@@ -1,0 +1,6 @@
+<map id="stocks.simulate" name="stocks.simulate">
+<area shape="rect" id="node2" href="$namespaceDecisionMethods.html#a4cb76bf4e82cc2509499af66f8c816b3" title="DecisionMethods.dailyrise" alt="" coords="176,5,351,32"/>
+<area shape="rect" id="node3" href="$namespaceDecisionMethods.html#a6ee6e338ea6a22bd13d5b9767b126f83" title="DecisionMethods.IRpred" alt="" coords="181,56,345,83"/>
+<area shape="rect" id="node4" href="$namespaceDecisionMethods.html#a856437b184fc8efd2df5f7fe1ba3644d" title="DecisionMethods.LS" alt="" coords="192,107,335,133"/>
+<area shape="rect" id="node5" href="$namespaceDecisionMethods.html#a44bd5be577a4d99d6b2d144ad405dd09" title="DecisionMethods.randombuy" alt="" coords="168,157,359,184"/>
+</map>
